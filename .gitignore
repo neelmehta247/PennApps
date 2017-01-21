@@ -2,3 +2,4 @@ Django/.idea
 Android/PennApps/.idea/
 *.pyc
 Django/venv
+Django/api/migrations
