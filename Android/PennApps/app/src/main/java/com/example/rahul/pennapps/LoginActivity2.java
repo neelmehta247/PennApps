@@ -1,6 +1,8 @@
 package com.example.rahul.pennapps;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,19 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by rahul on 21/01/2017.
@@ -55,15 +70,53 @@ public class LoginActivity2 extends AppCompatActivity {
      * Validating form
      */
     private void submitForm() {
-        if (!validateEmail()) {
-            return;
-        }
+        if (validateEmail() && validatePassword()) {
+            RequestQueue queue = Volley.newRequestQueue(this);
+            String url = "http://pennapps-nrbs.herokuapp.com/users/login/";
 
-        if (!validatePassword()) {
-            return;
-        }
+            StringRequest req = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
 
-        Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_SHORT).show();
+                @Override
+                public void onResponse(String resp) {
+                    try {
+                        JSONObject response = new JSONObject(resp);
+                        String sessionToken = (String) response.get("session_token");
+                        String userToken = (String) response.getJSONObject("user").get("id");
+//                        Log.v("Session + User tokens", String.format("%s %s", sessionToken, userToken));
+                        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString("session_token", sessionToken);
+                        editor.putString("user_token", userToken);
+                        editor.commit();
+
+                        Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(LoginActivity2.this, MainActivity.class);
+                        startActivity(intent);
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), "Login Error", Toast.LENGTH_SHORT).show();
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("username", inputEmail.getText().toString());
+                    params.put("password", inputPassword.getText().toString());
+                    return params;
+                }
+            };
+
+            // Add the request to the RequestQueue.
+            queue.add(req);
+        }
     }
 
     private boolean validateEmail() {

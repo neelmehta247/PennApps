@@ -158,6 +158,12 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("user_token", userToken);
                         editor.commit();
 
+                        Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -165,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    return;
+                    Toast.makeText(getApplicationContext(), "Login Error", Toast.LENGTH_SHORT).show();
                 }
             }) {
                 @Override
@@ -185,7 +191,6 @@ public class LoginActivity extends AppCompatActivity {
             // Add the request to the RequestQueue.
             queue.add(req);
         }
-        Toast.makeText(getApplicationContext(), "Toast", Toast.LENGTH_SHORT).show();
     }
 
     private boolean validateName() {
