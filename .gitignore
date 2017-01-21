@@ -1,2 +1,4 @@
 Django/.idea
 Android/PennApps/.idea/
+*.pyc
+Django/venv
