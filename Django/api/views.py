@@ -1,5 +1,4 @@
 from django.core import serializers
-from django.http import JsonResponse
 from django.http import HttpResponse
 
 from .models import University
@@ -9,9 +8,9 @@ from .models import University
 
 
 def new_user(request):
-    return ""
+    return ''
 
 
 def all_universities(request):
-    #return JsonResponse(serializers.serialize('json', University.objects.all()))
-    return HttpResponse(len(University.objects.all()))
+    return HttpResponse(serializers.serialize('json', University.objects.all()),
+                        content_type='application/json; charset=utf8')
