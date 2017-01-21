@@ -13,6 +13,9 @@ class University(models.Model):
     def __str__(self):
         return self.name
 
+    def json(self):
+        return {'id': self.pk, 'name': self.name}
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
@@ -36,3 +39,8 @@ class Session(models.Model):
 
     def json(self):
         return {'session_token': str(self.session_token), 'user': self.user.json()}
+
+    def is_authenticated(self):
+        sessions = Session.objects.filter(session_token=self.session_token)
+
+        return len(sessions) == 1

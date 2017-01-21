@@ -61,5 +61,11 @@ def login(request):
 
 
 def all_universities(request):
-    return HttpResponse(serializers.serialize('json', University.objects.all()),
+    universities = University.objects.all()
+    data = []
+
+    for university in universities:
+        data.append(university.json())
+
+    return HttpResponse(json.dumps(data),
                         content_type='application/json; charset=utf8')
