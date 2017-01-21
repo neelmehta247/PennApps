@@ -1,0 +1,4 @@
+.idea
+api/migrations
+venv
+*.pyc
