@@ -2,7 +2,6 @@ import json
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.core import serializers
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 
 from .models import University, UserProfile, Session
@@ -67,5 +66,7 @@ def all_universities(request):
     for university in universities:
         data.append(university.json())
 
-    return HttpResponse(json.dumps(data),
+    send_data = {'data': data}
+
+    return HttpResponse(json.dumps(send_data),
                         content_type='application/json; charset=utf8')

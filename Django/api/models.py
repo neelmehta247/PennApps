@@ -44,3 +44,27 @@ class Session(models.Model):
         sessions = Session.objects.filter(session_token=self.session_token)
 
         return len(sessions) == 1
+
+
+class Event(models.Model):
+    time = models.DateTimeField('event time')
+    location_latitude = models.DecimalField(max_digits=10, decimal_places=5)
+    location_longitude = models.DecimalField(max_digits=10, decimal_places=5)
+    location_name = models.TextField()
+    description = models.TextField()
+    title = models.TextField()
+    image = models.TextField()
+    university = models.ForeignKey(University, on_delete=models.CASCADE)
+    organizer = models.ForeignKey(UserProfile)
+
+    def __str__(self):
+        return self.title
+
+
+class Interest(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    level = models.CharField(max_length=2, default='in')
+
+    def __str__(self):
+        return self.user.user.username + ' ' + self.level + ' ' + self.event.title
