@@ -2,7 +2,6 @@ import json
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.core import serializers
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 
 from .models import University, UserProfile, Session
@@ -39,6 +38,35 @@ def new_user(request):
             return HttpResponseServerError
 
 
+def login(request):
+    username = request.POST.get('username', False)
+    password = request.POST.get('password', False)
+
+    if not username or not password:
+        return HttpResponseBadRequest()
+
+    else:
+        user = authenticate(username=username, password=password)
+        user_profile = UserProfile.objects.get(user=user)
+
+        if user is not None:
+            session = Session(user=user_profile)
+            session.save()
+
+            return HttpResponse(json.dumps(session.json()),
+                                content_type='application/json; charset=utf8')
+        else:
+            return HttpResponseServerError
+
+
 def all_universities(request):
-    return HttpResponse(serializers.serialize('json', University.objects.all()),
+    universities = University.objects.all()
+    data = []
+
+    for university in universities:
+        data.append(university.json())
+
+    send_data = {'data': data}
+
+    return HttpResponse(json.dumps(send_data),
                         content_type='application/json; charset=utf8')
