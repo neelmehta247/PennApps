@@ -10,7 +10,18 @@
     <string name="err_msg_email">Enter valid email address</string>
     <string name="err_msg_password">Enter the password</string>
     <string-array name="university_list_names">
+        <item>Choose University...</item>
         <item>Columbia University</item>
+        <item>Cornell University</item>
+        <item>Penn State</item>
+        <item>Georgia Tech</item>
+        <item>University of Pennsylvania</item>
+        <item>University of Washington</item>
+        <item>University of Waterloo</item>
+        <item>Columbia University</item>
+        <item>Cornell University</item>
+        <item>Penn State</item>
+        <item>Georgia Tech</item>
         <item>University of Pennsylvania</item>
         <item>University of Washington</item>
         <item>University of Waterloo</item>

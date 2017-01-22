@@ -69,7 +69,8 @@
             <Spinner
                 android:id="@+id/input_university"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:entries="@array/university_list_names">
 
             </Spinner>
 
