@@ -51,6 +51,7 @@ class Event(models.Model):
     image = models.TextField()
     university = models.ForeignKey(University, on_delete=models.CASCADE)
     organizer = models.ForeignKey(UserProfile)
+    ticketmaster = models.TextField(blank=True)
     id = models.CharField(max_length=36, default=uuid.uuid4, primary_key=True)
 
     def __str__(self):
@@ -58,11 +59,15 @@ class Event(models.Model):
 
     def json(self):
         interest = Interest.objects.filter(event=self)
-
-        return {'time': str(self.time), 'location_latitude': str(self.location_latitude), 'image': self.image,
+        data = {'time': str(self.time), 'location_latitude': str(self.location_latitude), 'image': self.image,
                 'location_longitude': str(self.location_longitude), 'location_name': self.location_name,
                 'title': self.title, 'description': self.description, 'id': str(self.id),
                 'orgranizer': self.organizer.json(), 'num_interested': len(interest)}
+
+        if self.ticketmaster is not None:
+            data['ticketmaster'] = self.ticketmaster
+
+        return data
 
 
 class Interest(models.Model):

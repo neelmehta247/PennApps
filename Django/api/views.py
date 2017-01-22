@@ -304,17 +304,17 @@ def create_event(request):
     s3 = boto3.resource('s3', config=Config(signature_version='s3v4'))
     s3.Bucket('pennapps-17-us-standard').put_object(Key=image_uuid, Body=image_file)
 
-    s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
-    image = s3.generate_presigned_url(
-        ClientMethod='get_object',
-        Params={
-            'Bucket': 'pennapps-17-us-standard',
-            'Key': image_uuid,
-        })
+    bucket = s3.Bucket('pennapps-17-us-standard')
+    object = bucket.Object(image_uuid)
+
+    bucket.Acl().put(ACL='public-read')
+    object.Acl().put(ACL='public-read')
+
+    url = 'https://s3.amazonaws.com/pennapps-17-us-standard/' + image_uuid
 
     event = Event(time=dt.fromtimestamp(int(time)), university=user.university, organizer=user,
                   description=description, title=title, location_name=location_name, location_latitude=latitude,
-                  location_longitude=longitude, image=image)
+                  location_longitude=longitude, image=url)
     event.save()
 
     return HttpResponse(json.dumps(event.json()),
