@@ -1,6 +1,5 @@
 package com.example.rahul.pennapps;
 
-import android.*;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;

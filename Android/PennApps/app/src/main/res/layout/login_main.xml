@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bluebackground">
@@ -70,12 +68,9 @@
             <Spinner
                 android:id="@+id/input_university"
                 android:layout_width="350dp"
-                android:layout_marginTop="5dp"
                 android:layout_height="wrap_content"
-                android:entries="@array/university_list_names" >
-
-            </Spinner>
-
+                android:layout_marginTop="5dp"
+                android:entries="@array/university_list_names" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -86,8 +81,6 @@
             android:layout_marginTop="40dp"
             android:fadeScrollbars="false"
             android:text="@string/btn_sign_up"
-
-
             android:textColor="@android:color/black" />
 
         <Button
@@ -97,7 +90,6 @@
             android:layout_marginTop="10dp"
             android:fadeScrollbars="false"
             android:text="Login Here"
-
             android:textColor="@android:color/black" />
 
     </LinearLayout>
