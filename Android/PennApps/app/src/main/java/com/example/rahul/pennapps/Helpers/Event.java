@@ -1,5 +1,8 @@
 package com.example.rahul.pennapps.Helpers;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
@@ -15,7 +18,7 @@ import java.util.TimeZone;
  * Created by rahul on 21/01/2017.
  */
 
-public class Event {
+public class Event implements Parcelable {
     public String description;
     public String locationName;
     public long time;
@@ -24,6 +27,49 @@ public class Event {
     public String imageUrl;
     public String eventId;
     public String email;
+
+    private Event(Parcel in) {
+        description = in.readString();
+        locationName = in.readString();
+        time = in.readLong();
+        loc = in.readParcelable(LatLng.class.getClassLoader());
+        title = in.readString();
+        imageUrl = in.readString();
+        eventId = in.readString();
+        email = in.readString();
+    }
+
+    private Event() {
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(description);
+        dest.writeString(locationName);
+        dest.writeLong(time);
+        dest.writeParcelable(loc, flags);
+        dest.writeString(title);
+        dest.writeString(imageUrl);
+        dest.writeString(eventId);
+        dest.writeString(email);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
 
     public static Event fromJSON(JSONObject json) {
         Event event = new Event();

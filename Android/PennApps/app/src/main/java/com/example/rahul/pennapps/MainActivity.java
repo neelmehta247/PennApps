@@ -2,23 +2,20 @@ package com.example.rahul.pennapps;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
@@ -40,14 +37,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("MissingPermission")
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
-
     private GoogleMap googleMap;
     private GPSTracker gps;
 
@@ -64,8 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startActivity(new Intent(MainActivity.this, EventCreaterActivity.class));
             }
         });
 
@@ -100,9 +93,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        ArrayAdapter<String> adapter;
-                        List<String> list = new ArrayList<String>();
-
                         try {
                             for (int i = 0; i < response.getJSONArray("data").length(); i++) {
                                 JSONObject obj = response.getJSONArray("data").getJSONObject(i);
@@ -195,14 +185,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             googleMap.setMyLocationEnabled(true);
 
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Location loc = gps.getLocation();
 
             if (loc != null) {
                 double lat = loc.getLatitude();
                 double lng = loc.getLongitude();
 
-                CameraPosition position = new CameraPosition.Builder().target(new LatLng(lat, lng)).zoom(1).build();
+                CameraPosition position = new CameraPosition.Builder().target(new LatLng(lat, lng)).zoom(15).build();
 
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
             }
@@ -212,8 +201,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1: {
                 // If request is cancelled, the result arrays are empty.
@@ -222,25 +211,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     googleMap.setMyLocationEnabled(true);
 
-                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                     Location loc = gps.getLocation();
 
                     if (loc != null) {
                         double lat = loc.getLatitude();
                         double lng = loc.getLongitude();
 
-                        CameraPosition position = new CameraPosition.Builder().target(new LatLng(lat, lng)).build();
+                        CameraPosition position = new CameraPosition.Builder().target(new LatLng(lat, lng)).zoom(15).build();
 
                         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
                     }
                     getEvents();
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
-                return;
             }
 
             // other 'case' lines to check for other
@@ -250,7 +232,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(this, "Info window clicked: " + marker.getTitle(),
-                Toast.LENGTH_SHORT).show();
+        Event event = hash.get(marker.getTitle());
+        Intent intent = new Intent(this, EventInfoActivity.class);
+        intent.putExtra("event", event);
+        startActivity(intent);
     }
 }

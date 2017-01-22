@@ -51,12 +51,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_main);
 
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);\
 
         login();
 
         populateSpinner();
+
+
 
         inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_name);
         inputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_email);
@@ -90,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login() {
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences("token_prefs", Context.MODE_PRIVATE);
         String sessionToken = sharedPref.getString("session_token", null);
         String userToken = sharedPref.getString("user_token", null);
 
