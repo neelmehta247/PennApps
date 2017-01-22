@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^events/organizing/', views.all_organizing),
     url(r'^events/create/', views.create_event),
     url(r'^events/going/', views.all_going),
-    url(r'^events/', views.get_events),
     url(r'^events/interested/', views.all_interested),
+    url(r'^events/', views.get_events),
     url(r'^universities/all/', views.all_universities),
 ]

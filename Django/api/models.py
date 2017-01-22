@@ -68,7 +68,7 @@ class Event(models.Model):
 class Interest(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    level = models.CharField(max_length=2, default='in')
+    level = models.CharField(max_length=2, default='go')
 
     def __str__(self):
         return self.user.user.username + ' ' + self.level + ' ' + self.event.title

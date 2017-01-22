@@ -1,8 +1,8 @@
 from __future__ import print_function
 
-from datetime import datetime as dt
 import json
 import uuid
+from datetime import datetime as dt
 
 import boto3
 from botocore.client import Config
@@ -207,13 +207,13 @@ def all_going(request):
             return HttpResponse(json.dumps({'meta': 'failed', 'message': 'session token not valid'}), status=728,
                                 content_type='application/json; charset=utf8')
 
-    events = map((lambda x: x.event), Interest.objects.filter(user=user))
+    interests = Interest.objects.filter(user=user)
 
     data = []
 
-    for event in events:
-        if event.level == 'go':
-            data.append(event.json())
+    for interest in interests:
+        if interest.level == 'go':
+            data.append(interest.event.json())
 
     send_data = {'data': data}
 
@@ -235,17 +235,17 @@ def all_interested(request):
             return HttpResponse(json.dumps({'meta': 'failed', 'message': 'session token not valid'}), status=728,
                                 content_type='application/json; charset=utf8')
 
-    events = map((lambda x: x.event), Interest.objects.filter(user=user))
+    interests = Interest.objects.filter(user=user)
 
     data = []
 
-    for event in events:
-        if event.level == 'in':
-            data.append(event.json())
+    for interest in interests:
+        if interest.level == 'in':
+            data.append(interest.event.json())
 
     send_data = {'data': data}
 
-    return HttpResponse(json.dumps(send_data),
+    return HttpResponse(json.dumps(send_data), status=200,
                         content_type='application/json; charset=utf8')
 
 
