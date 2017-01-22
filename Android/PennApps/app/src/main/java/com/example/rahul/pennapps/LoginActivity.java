@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login() {
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences("token_prefs", Context.MODE_PRIVATE);
         String sessionToken = sharedPref.getString("session_token", null);
         String userToken = sharedPref.getString("user_token", null);
 
