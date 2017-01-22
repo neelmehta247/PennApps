@@ -293,16 +293,16 @@ def create_event(request):
     if not time or not latitude or not longitude or not location_name or not description or not title or not image_file:
         return HttpResponseBadRequest()
 
-    image_uuid = str(uuid.uuid4())
+    image_uuid = str(uuid.uuid4()) + '.png'
 
     s3 = boto3.resource('s3', config=Config(signature_version='s3v4'))
-    s3.Bucket('pennapps-us-east-2-218382938').put_object(Key=image_uuid, Body=image_file)
+    s3.Bucket('pennapps-17-us-standard').put_object(Key=image_uuid, Body=image_file)
 
     s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
     image = s3.generate_presigned_url(
         ClientMethod='get_object',
         Params={
-            'Bucket': 'pennapps-us-east-2-218382938',
+            'Bucket': 'pennapps-17-us-standard',
             'Key': image_uuid,
         })
 
