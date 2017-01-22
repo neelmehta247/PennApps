@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap googleMap;
     private GPSTracker gps;
 
-    private Map<String, Event> hash = new HashMap<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,11 +95,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             for (int i = 0; i < response.getJSONArray("data").length(); i++) {
                                 JSONObject obj = response.getJSONArray("data").getJSONObject(i);
                                 Event evt = Event.fromJSON(obj);
-                                hash.put(evt.title, evt);
 
-                                Marker m = googleMap.addMarker(new MarkerOptions()
+                                googleMap.addMarker(new MarkerOptions()
                                         .position(evt.loc)
-                                        .title(evt.title));
+                                        .title(evt.title)).setTag(evt);
                                 googleMap.setOnInfoWindowClickListener(MainActivity.this);
                             }
                         } catch (JSONException e) {
@@ -234,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Event event = hash.get(marker.getTitle());
+        Event event = (Event) marker.getTag();
         Intent intent = new Intent(this, EventInfoActivity.class);
         intent.putExtra("event", event);
         startActivity(intent);

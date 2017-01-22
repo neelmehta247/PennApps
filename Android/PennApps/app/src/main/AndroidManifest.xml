@@ -6,12 +6,16 @@
         android:allowBackup="true"
         android:icon="@drawable/eva"
         android:label="@string/app_name"
+        android:name=".PennApps"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <meta-data android:name="com.usebutton.applicationid"
+            android:value="app-27f7b83ac2d6f06f"/>
 
         <activity
             android:name=".MainActivity"

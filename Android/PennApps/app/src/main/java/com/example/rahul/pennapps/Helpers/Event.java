@@ -18,7 +18,7 @@ import java.util.TimeZone;
  * Created by rahul on 21/01/2017.
  */
 
-public class Event implements Parcelable {
+public class Event implements Parcelable{
     public String description;
     public String locationName;
     public long time;
@@ -28,6 +28,7 @@ public class Event implements Parcelable {
     public String eventId;
     public int num_interested;
     public String email;
+    public String ticketmaster;
 
     private Event() {
     }
@@ -42,6 +43,7 @@ public class Event implements Parcelable {
         eventId = in.readString();
         num_interested = in.readInt();
         email = in.readString();
+        ticketmaster = in.readString();
     }
 
     @Override
@@ -55,6 +57,7 @@ public class Event implements Parcelable {
         dest.writeString(eventId);
         dest.writeInt(num_interested);
         dest.writeString(email);
+        dest.writeString(ticketmaster);
     }
 
     @Override
@@ -86,6 +89,10 @@ public class Event implements Parcelable {
             event.imageUrl = json.getString("image");
             event.eventId = json.getString("id");
             event.num_interested = json.getInt("num_interested");
+            if (json.has("ticketmaster"))
+                event.ticketmaster = json.getString("ticketmaster");
+            else
+                event.ticketmaster = null;
         } catch (JSONException e) {
             e.printStackTrace();
         }

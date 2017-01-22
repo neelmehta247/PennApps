@@ -2,11 +2,13 @@ package com.example.rahul.pennapps;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -24,6 +26,11 @@ import com.android.volley.toolbox.Volley;
 import com.example.rahul.pennapps.Helpers.Event;
 import com.example.rahul.pennapps.Helpers.HeaderView;
 import com.squareup.picasso.Picasso;
+import com.usebutton.sdk.ButtonContext;
+import com.usebutton.sdk.ButtonDropin;
+import com.usebutton.sdk.context.Location;
+import com.usebutton.sdk.context.MusicArtist;
+import com.usebutton.sdk.util.LocationProvider;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -34,7 +41,6 @@ import java.util.Map;
  */
 
 public class EventInfoActivity extends AppCompatActivity {
-    private ImageView header;
     private HeaderView toolbarHeaderView, floatHeaderView;
     private boolean isHideToolbarView;
     private FloatingActionButton postFAB;
@@ -49,7 +55,7 @@ public class EventInfoActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle(" ");
-        header = (ImageView) findViewById(R.id.header);
+        ImageView header = (ImageView) findViewById(R.id.header);
 
         toolbarHeaderView = (HeaderView) findViewById(R.id.toolbar_header_view);
         floatHeaderView = (HeaderView) findViewById(R.id.float_header_view);
@@ -114,6 +120,35 @@ public class EventInfoActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.location_text)).setText(event.locationName);
         ((TextView) findViewById(R.id.time_text)).setText(new Date(event.time).toString());
         ((TextView) findViewById(R.id.interest_text)).setText(String.valueOf(event.num_interested) + " people are interested");
+
+        ButtonDropin dropin = (ButtonDropin) findViewById(R.id.button_button);
+
+        final ButtonContext context = ButtonContext.withSubjectLocation(new Location("Feast", event.loc.latitude, event.loc.longitude));
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        final android.location.Location userLocation = new LocationProvider(this).getBestLocation();
+        if (userLocation != null) {
+            context.setUserLocation(new com.usebutton.sdk.context.Location(userLocation.getLatitude(), userLocation.getLongitude()));
+        }
+
+        dropin.prepareForDisplay(context);
+
+        if (event.ticketmaster != null) {
+            ButtonDropin dropin2 = (ButtonDropin) findViewById(R.id.button_button_button);
+
+            final ButtonContext buttonContext = ButtonContext.withUserLocation(new Location(event.loc.latitude, event.loc.longitude))
+                    .setArtist(new MusicArtist(event.ticketmaster));
+
+            dropin2.prepareForDisplay(buttonContext);
+        }
     }
 
     private String getSessionToken() {

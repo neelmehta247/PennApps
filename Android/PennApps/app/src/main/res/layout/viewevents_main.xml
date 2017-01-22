@@ -57,43 +57,63 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
+            android:id="@+id/interest_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Description" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="What"
-            android:textSize="26sp"/>
+            android:textSize="26sp" />
 
         <TextView
             android:id="@+id/description_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:text="Description" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="When"
-            android:textSize="26sp"/>
+            android:textSize="26sp" />
 
         <TextView
             android:id="@+id/time_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:text="Description" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Where"
-            android:textSize="26sp"/>
+            android:textSize="26sp" />
 
         <TextView
             android:id="@+id/location_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:text="Description" />
+
+        <com.usebutton.sdk.ButtonDropin xmlns:button="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:id="@+id/button_button"
+            android:layout_height="wrap_content"
+            button:btn_buttonId="btn-07c38b970d581246" />
+
+        <com.usebutton.sdk.ButtonDropin
+            xmlns:button="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_button_button"
+            button:btn_buttonId="btn-6c40885e60a1fd85" />
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
