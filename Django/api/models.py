@@ -40,11 +40,6 @@ class Session(models.Model):
     def json(self):
         return {'session_token': str(self.session_token), 'user': self.user.json()}
 
-    def is_authenticated(self):
-        sessions = Session.objects.filter(session_token=self.session_token)
-
-        return len(sessions) == 1
-
 
 class Event(models.Model):
     time = models.DateTimeField('event time')
@@ -56,9 +51,16 @@ class Event(models.Model):
     image = models.TextField()
     university = models.ForeignKey(University, on_delete=models.CASCADE)
     organizer = models.ForeignKey(UserProfile)
+    id = models.CharField(max_length=36, default=uuid.uuid4, primary_key=True)
 
     def __str__(self):
         return self.title
+
+    def json(self):
+        return {'time': str(self.time), 'location_latitude': str(self.location_latitude), 'image': self.image,
+                'location_longitude': str(self.location_longitude), 'location_name': self.location_name,
+                'title': self.title, 'description': self.description, 'id': str(self.id),
+                'orgranizer': self.organizer.json()}
 
 
 class Interest(models.Model):
