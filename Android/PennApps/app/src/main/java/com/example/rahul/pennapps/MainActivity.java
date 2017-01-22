@@ -16,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
@@ -38,9 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("MissingPermission")
@@ -96,9 +93,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        ArrayAdapter<String> adapter;
-                        List<String> list = new ArrayList<String>();
-
                         try {
                             for (int i = 0; i < response.getJSONArray("data").length(); i++) {
                                 JSONObject obj = response.getJSONArray("data").getJSONObject(i);
