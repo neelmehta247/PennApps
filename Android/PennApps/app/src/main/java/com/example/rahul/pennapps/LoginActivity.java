@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);\
+        setSupportActionBar(toolbar);
 
         login();
 

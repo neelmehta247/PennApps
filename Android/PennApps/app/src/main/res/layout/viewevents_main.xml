@@ -53,40 +53,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:padding="20dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description" />
+            android:text="What"
+            android:textSize="26sp"/>
 
         <TextView
             android:id="@+id/description_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description" />
+            android:text="Description"
+            android:layout_marginBottom="20dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="When" />
+            android:text="When"
+            android:textSize="26sp"/>
 
         <TextView
             android:id="@+id/time_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description" />
+            android:text="Description"
+            android:layout_marginBottom="20dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Where" />
+            android:text="Where"
+            android:textSize="26sp"/>
 
         <TextView
             android:id="@+id/location_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description" />
+            android:text="Description"
+            android:layout_marginBottom="20dp"/>
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -94,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:src="@drawable/background"
+        android:src="@drawable/plus_one"
         app:backgroundTint="@android:color/black"
         app:layout_anchor="@+id/appbar"
         app:layout_anchorGravity="bottom|right|end"
