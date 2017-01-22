@@ -54,6 +54,8 @@ public class LoginActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        login();
+
         populateSpinner();
 
         inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_name);
@@ -86,6 +88,18 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void login() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        String sessionToken = sharedPref.getString("session_token", null);
+        String userToken = sharedPref.getString("user_token", null);
+
+        if (sessionToken != null && userToken != null) {
+            Intent intent = new Intent(LoginActivity.this, LoginActivity2.class);
+            startActivity(intent);
+        }
+    }
+
 
     private void populateSpinner() {
         // Instantiate the RequestQueue.
