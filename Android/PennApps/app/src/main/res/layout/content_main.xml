@@ -1,39 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_main"
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/map"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.rahul.pennapps.MainActivity"
-    tools:showIn="@layout/activity_main">
-
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
-
-    <com.etiennelawlor.discreteslider.library.ui.DiscreteSlider
-        android:layout_height="64dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:layout_gravity="bottom"
-        android:background="@color/grey_100"
-        app:backdropFillColor="@color/grey_200"
-        app:backdropStrokeColor="@color/grey_300"
-        app:backdropStrokeWidth="1dp"
-        app:horizontalBarThickness="4dp"
-        app:tickMarkCount="6"
-        app:tickMarkRadius="8dp"
-        app:position="1"
-        app:thumb="@drawable/thumb"
-        app:progressDrawable="@drawable/transparent_progress_drawable"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent" />
-
-
-</RelativeLayout>
+    android:layout_height="match_parent" />

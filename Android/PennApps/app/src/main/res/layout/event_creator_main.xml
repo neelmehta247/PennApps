@@ -7,9 +7,9 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:layout_height="wrap_content"
         android:background="#107f93"
-        android:layout_height="wrap_content">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
     </android.support.design.widget.AppBarLayout>
 
@@ -20,57 +20,57 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/event_title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="60dp"
             android:layout_marginTop="11dp"
             android:layout_toEndOf="@+id/textView5"
-            android:layout_toRightOf="@+id/textView5"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="60dp">
+            android:layout_toRightOf="@+id/textView5">
 
             <EditText
                 android:id="@+id/event_title_input"
                 android:layout_width="304dp"
                 android:layout_height="wrap_content"
                 android:hint="Create Title..."
-                android:maxLines="1"/>
+                android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
 
         <TextView
-            android:text="Image"
-            android:textSize="20sp"
+            android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView4"
-            android:layout_marginTop="30dp"
-            android:layout_below="@+id/textView6"
             android:layout_alignLeft="@+id/textView6"
-            android:layout_alignStart="@+id/textView6" />
+            android:layout_alignStart="@+id/textView6"
+            android:layout_below="@+id/textView6"
+            android:layout_marginTop="30dp"
+            android:text="Image"
+            android:textSize="20sp" />
 
         <TextView
-            android:text="Description"
-            android:textSize="20sp"
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView"
-            android:layout_marginTop="140dp"
-            android:layout_below="@+id/textView6"
             android:layout_alignLeft="@+id/textView6"
-            android:layout_alignStart="@+id/textView6" />
+            android:layout_alignStart="@+id/textView6"
+            android:layout_below="@+id/textView6"
+            android:layout_marginTop="100dp"
+            android:text="Description"
+            android:textSize="20sp" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/event_desc"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="185dp"
-            android:layout_toEndOf="@+id/textView5"
-            android:layout_toRightOf="@+id/textView5"
             android:layout_width="match_parent"
-            android:layout_marginLeft="60dp">
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="145dp"
+            android:layout_toEndOf="@+id/textView5"
+            android:layout_toRightOf="@+id/textView5">
 
             <EditText
                 android:id="@+id/event_desc_input"
@@ -80,100 +80,124 @@
         </android.support.design.widget.TextInputLayout>
 
 
-
         <TextView
-            android:text="Time"
-            android:textSize="20sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/textView5"
-            android:layout_marginTop="200dp"
-            android:layout_below="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/textView6"
-            android:layout_alignStart="@+id/textView6" />
+            android:layout_alignStart="@+id/textView6"
+            android:layout_below="@+id/textView6"
+            android:layout_marginTop="150dp"
+            android:text="Time"
+            android:textSize="20sp" />
 
 
         <TextView
-            android:text="Location"
-            android:textSize="20sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/textView7"
-            android:layout_marginTop="290dp"
-            android:layout_below="@+id/textView6"
-            android:layout_alignLeft="@+id/textView6"
-            android:layout_alignStart="@+id/textView6" />
-
-        <TextView
-            android:text="Title"
-            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textView6"
+            android:layout_alignStart="@+id/textView6"
+            android:layout_below="@+id/textView6"
+            android:layout_marginTop="240dp"
+            android:text="Location"
+            android:textSize="20sp" />
+
+        <TextView
             android:id="@+id/textView6"
-            android:layout_marginLeft="17dp"
-            android:layout_marginStart="17dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/event_title"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="11dp" />
+            android:layout_marginBottom="11dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginStart="17dp"
+            android:text="Title"
+            android:textSize="20sp" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/time_wrap"
-            android:layout_height="wrap_content"
             android:layout_width="200dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="160dp"
-            android:layout_marginTop="230dp"
+            android:layout_marginTop="180dp"
             android:gravity="right">
 
             <Button
-                android:layout_marginTop="20dp"
+                android:id="@+id/btn_time"
                 android:layout_width="113dp"
                 android:layout_height="wrap_content"
-                android:text="Select Time"
-                android:id="@+id/btn_time" />
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:text="Select Time" />
 
             <Button
+                android:id="@+id/btn_date"
                 android:layout_width="113dp"
                 android:layout_height="wrap_content"
-                android:text="Select Date"
-                android:id="@+id/btn_date" />
+                android:text="Select Date" />
 
         </android.support.design.widget.TextInputLayout>
 
         <EditText
+            android:id="@+id/in_date"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:id="@+id/in_date"
-            android:layout_marginTop="300dp"
-            android:layout_marginRight="38dp"
             android:layout_marginEnd="38dp"
-            android:layout_marginStart="130dp"
             android:layout_marginLeft="130dp"
+            android:layout_marginRight="38dp"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="300dp"
             android:gravity="center_vertical|center" />
 
         <EditText
+            android:id="@+id/in_time"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:id="@+id/in_time"
-            android:layout_marginTop="255dp"
-            android:layout_marginRight="30dp"
             android:layout_marginEnd="38dp"
-            android:layout_marginStart="130dp"
             android:layout_marginLeft="130dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="255dp"
             android:gravity="center_vertical|center" />
 
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="200dp"
-            android:layout_height="200dp"
-            tools:context="com.example.mapwithmarker.MapsMarkerActivity"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
+            android:layout_height="130dp"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/textView7"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView7"
+            tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
+
+        <Button
+            android:id="@+id/btn_select_img"
+            android:layout_width="113dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView4"
+            android:layout_alignBottom="@+id/textView4"
+            android:layout_alignEnd="@+id/time_wrap"
+            android:layout_alignRight="@+id/time_wrap"
+            android:text="Select Image" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/background" />
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="113dp"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
 
 
     </RelativeLayout>
