@@ -59,8 +59,6 @@ public class LoginActivity extends AppCompatActivity {
 
         populateSpinner();
 
-
-
         inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_name);
         inputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_email);
         inputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_password);

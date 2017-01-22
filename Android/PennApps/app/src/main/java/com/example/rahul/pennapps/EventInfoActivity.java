@@ -81,7 +81,7 @@ public class EventInfoActivity extends AppCompatActivity {
         postFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String url = "http://pennapps-nrbs.herokuapp.com/events/" + event.eventId + "interest/add/";
+                String url = "http://pennapps-nrbs.herokuapp.com/events/" + event.eventId + "/interest/add/";
 
                 StringRequest req = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
 
@@ -113,12 +113,12 @@ public class EventInfoActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.description_text)).setText(event.description);
         ((TextView) findViewById(R.id.location_text)).setText(event.locationName);
         ((TextView) findViewById(R.id.time_text)).setText(new Date(event.time).toString());
+        ((TextView) findViewById(R.id.interest_text)).setText(String.valueOf(event.num_interested) + " people are interested");
     }
 
     private String getSessionToken() {
         SharedPreferences sharedPref = getSharedPreferences("token_prefs", Context.MODE_PRIVATE);
-        String sessionToken = sharedPref.getString("session_token", null);
 
-        return sessionToken;
+        return sharedPref.getString("session_token", null);
     }
 }

@@ -95,7 +95,10 @@ def add_interest(request, event_id):
 
         event = Event.objects.get(id=event_id)
 
-        interest = Interest.objects.get(event=event, user=user)
+        try:
+            interest = Interest.objects.get(event=event, user=user)
+        except ObjectDoesNotExist:
+            interest = None
 
         if interest is not None:
             interest.delete()
@@ -122,7 +125,10 @@ def add_going(request, event_id):
 
         event = Event.objects.get(id=event_id)
 
-        interest = Interest.objects.get(event=event, user=user)
+        try:
+            interest = Interest.objects.get(event=event, user=user)
+        except ObjectDoesNotExist:
+            interest = None
 
         if interest is not None:
             interest.delete()
