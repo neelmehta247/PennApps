@@ -2,23 +2,23 @@ package com.example.rahul.pennapps;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
@@ -195,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             googleMap.setMyLocationEnabled(true);
 
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Location loc = gps.getLocation();
 
             if (loc != null) {
@@ -213,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1: {
                 // If request is cancelled, the result arrays are empty.
@@ -235,12 +234,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     getEvents();
 
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
-                return;
             }
 
             // other 'case' lines to check for other
@@ -250,7 +244,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(this, "Info window clicked: " + marker.getTitle(),
-                Toast.LENGTH_SHORT).show();
+        Event event = hash.get(marker.getTitle());
+        Intent intent = new Intent(this, EventInfoActivity.class);
+        intent.putExtra("event", event);
+        startActivity(intent);
     }
 }
