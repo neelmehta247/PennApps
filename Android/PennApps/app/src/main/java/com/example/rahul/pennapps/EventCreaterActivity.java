@@ -48,6 +48,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -197,18 +199,8 @@ public class EventCreaterActivity extends AppCompatActivity implements
         VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, url, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
-                String resultResponse = new String(response.data);
-                try {
-                    JSONObject result = new JSONObject(resultResponse);
-                    String status = result.getString("status");
-                    String message = result.getString("message");
-
-                    Intent intent = new Intent(EventCreaterActivity.this, MainActivity.class);
-                    startActivity(intent);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                Intent intent = new Intent(EventCreaterActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -361,12 +353,19 @@ public class EventCreaterActivity extends AppCompatActivity implements
                     // TODO Auto-generated method stub
                     lat = arg0.latitude;
                     lng = arg0.longitude;
+                    addMarker(lat, lng);
                     reverseGeocoding(lat, lng);
                     Log.d("arg0", arg0.latitude + "-" + arg0.longitude);
                 }
             });
         }
 
+    }
+
+    private void addMarker(double lat, double lng) {
+        googleMap.clear();
+        googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(lat, lng)));
     }
 
     private void reverseGeocoding(double lat, double lng) {
