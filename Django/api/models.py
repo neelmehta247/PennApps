@@ -43,8 +43,8 @@ class Session(models.Model):
 
 class Event(models.Model):
     time = models.DateTimeField('event time')
-    location_latitude = models.DecimalField(max_digits=10, decimal_places=5)
-    location_longitude = models.DecimalField(max_digits=10, decimal_places=5)
+    location_latitude = models.DecimalField(max_digits=12, decimal_places=7)
+    location_longitude = models.DecimalField(max_digits=12, decimal_places=7)
     location_name = models.TextField()
     description = models.TextField()
     title = models.TextField()
