@@ -1,10 +1,8 @@
 package com.example.rahul.pennapps;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,136 +10,69 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity {
+/**
+ * Created by rahul on 21/01/2017.
+ */
+
+public class LoginActivity2 extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private EditText inputName, inputEmail, inputPassword;
-    private TextInputLayout inputLayoutName, inputLayoutEmail, inputLayoutPassword;
-    private Button btnSignUp, btnLogin;
-    private Spinner spnrInputUniversity;
-
-    private Map<String, Integer> hash = new HashMap<>();
+    private EditText inputEmail, inputPassword;
+    private TextInputLayout inputLayoutEmail, inputLayoutPassword;
+    private Button btnLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_main);
+        setContentView(R.layout.login_main2);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        populateSpinner();
-
-        inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_name);
         inputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_email);
         inputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_password);
-        inputName = (EditText) findViewById(R.id.input_name);
         inputEmail = (EditText) findViewById(R.id.input_email);
         inputPassword = (EditText) findViewById(R.id.input_password);
-        btnSignUp = (Button) findViewById(R.id.btn_signup);
         btnLogin = (Button) findViewById(R.id.btn_login);
-        spnrInputUniversity = (Spinner) findViewById(R.id.input_university);
 
-        inputName.addTextChangedListener(new MyTextWatcher(inputName));
         inputEmail.addTextChangedListener(new MyTextWatcher(inputEmail));
         inputPassword.addTextChangedListener(new MyTextWatcher(inputPassword));
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                submitForm();
-            }
-        });
         btnLogin.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, LoginActivity2.class);
-                startActivity(intent);
+                submitForm();
             }
         });
-    }
-
-    private void populateSpinner() {
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://pennapps-nrbs.herokuapp.com/universities/all/";
-
-        JsonObjectRequest req = new JsonObjectRequest(url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        ArrayAdapter<String> adapter;
-                        List<String> list = new ArrayList<String>();
-
-                        try {
-                            for (int i = 0; i < response.getJSONArray("data").length(); i++) {
-                                try {
-                                    JSONObject obj = response.getJSONArray("data").getJSONObject(i);
-                                    list.add(obj.getString("name"));
-                                    hash.put(obj.getString("name"), obj.getInt("id"));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        adapter = new ArrayAdapter<String>(getApplicationContext(),
-                                android.R.layout.simple_spinner_item, list);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spnrInputUniversity.setAdapter(adapter);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Error: ", error.getMessage());
-            }
-        });
-
-        // Add the request to the RequestQueue.
-        queue.add(req);
     }
 
     /**
      * Validating form
      */
     private void submitForm() {
-        if (validateName() && validateEmail() && validatePassword()) {
+        if (validateEmail() && validatePassword()) {
             RequestQueue queue = Volley.newRequestQueue(this);
-            String url = "http://pennapps-nrbs.herokuapp.com/users/new/";
+            String url = "http://pennapps-nrbs.herokuapp.com/users/login/";
 
             StringRequest req = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
 
@@ -160,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        Intent intent = new Intent(LoginActivity2.this, MainActivity.class);
                         startActivity(intent);
 
 
@@ -177,13 +108,8 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
-                    System.out.println(String.valueOf((hash.get(spnrInputUniversity
-                            .getSelectedItem().toString()))));
-                    params.put("name", inputName.getText().toString());
-                    params.put("email", inputEmail.getText().toString());
+                    params.put("username", inputEmail.getText().toString());
                     params.put("password", inputPassword.getText().toString());
-                    params.put("university", String.valueOf((hash.get(spnrInputUniversity
-                            .getSelectedItem().toString()))));
                     return params;
                 }
             };
@@ -191,18 +117,6 @@ public class LoginActivity extends AppCompatActivity {
             // Add the request to the RequestQueue.
             queue.add(req);
         }
-    }
-
-    private boolean validateName() {
-        if (inputName.getText().toString().trim().isEmpty()) {
-            inputLayoutName.setError(getString(R.string.err_msg_name));
-            requestFocus(inputName);
-            return false;
-        } else {
-            inputLayoutName.setErrorEnabled(false);
-        }
-
-        return true;
     }
 
     private boolean validateEmail() {
@@ -257,9 +171,6 @@ public class LoginActivity extends AppCompatActivity {
 
         public void afterTextChanged(Editable editable) {
             switch (view.getId()) {
-                case R.id.input_name:
-                    validateName();
-                    break;
                 case R.id.input_email:
                     validateEmail();
                     break;
