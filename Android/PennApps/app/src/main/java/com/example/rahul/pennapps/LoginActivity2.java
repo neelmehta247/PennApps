@@ -83,11 +83,11 @@ public class LoginActivity2 extends AppCompatActivity {
                         String sessionToken = (String) response.get("session_token");
                         String userToken = (String) response.getJSONObject("user").get("id");
 //                        Log.v("Session + User tokens", String.format("%s %s", sessionToken, userToken));
-                        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref = getSharedPreferences("token_prefs", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString("session_token", sessionToken);
                         editor.putString("user_token", userToken);
-                        editor.commit();
+                        editor.apply();
 
                         Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
 
