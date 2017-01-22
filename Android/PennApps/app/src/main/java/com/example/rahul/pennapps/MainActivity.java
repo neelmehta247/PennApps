@@ -141,8 +141,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.interested) {
+            startActivity((new Intent(this, EventListActivity.class)).putExtra("type", 1));
+        } else if (id == R.id.organizing) {
+            startActivity((new Intent(this, EventListActivity.class)).putExtra("type", 2));
         }
 
         return super.onOptionsItemSelected(item);

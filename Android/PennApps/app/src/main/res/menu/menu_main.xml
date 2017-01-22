@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.rahul.pennapps.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/interested"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Interested In"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/organizing"
+        android:orderInCategory="100"
+        android:title="Organizing"
         app:showAsAction="never" />
 </menu>
