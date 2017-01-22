@@ -26,9 +26,13 @@ public class Event implements Parcelable {
     public String title;
     public String imageUrl;
     public String eventId;
+    public int num_interested;
     public String email;
 
-    private Event(Parcel in) {
+    private Event() {
+    }
+
+    protected Event(Parcel in) {
         description = in.readString();
         locationName = in.readString();
         time = in.readLong();
@@ -36,10 +40,8 @@ public class Event implements Parcelable {
         title = in.readString();
         imageUrl = in.readString();
         eventId = in.readString();
+        num_interested = in.readInt();
         email = in.readString();
-    }
-
-    private Event() {
     }
 
     @Override
@@ -51,6 +53,7 @@ public class Event implements Parcelable {
         dest.writeString(title);
         dest.writeString(imageUrl);
         dest.writeString(eventId);
+        dest.writeInt(num_interested);
         dest.writeString(email);
     }
 
@@ -82,7 +85,7 @@ public class Event implements Parcelable {
             event.title = json.getString("title");
             event.imageUrl = json.getString("image");
             event.eventId = json.getString("id");
-            event.email = json.getString("email");
+            event.num_interested = json.getInt("num_interested");
         } catch (JSONException e) {
             e.printStackTrace();
         }

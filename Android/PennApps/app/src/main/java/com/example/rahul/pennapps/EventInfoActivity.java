@@ -113,6 +113,7 @@ public class EventInfoActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.description_text)).setText(event.description);
         ((TextView) findViewById(R.id.location_text)).setText(event.locationName);
         ((TextView) findViewById(R.id.time_text)).setText(new Date(event.time).toString());
+        ((TextView) findViewById(R.id.interest_text)).setText(String.valueOf(event.num_interested) + " people are interested");
     }
 
     private String getSessionToken() {
