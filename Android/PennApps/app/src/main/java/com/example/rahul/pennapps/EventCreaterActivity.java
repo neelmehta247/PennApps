@@ -2,22 +2,40 @@ package com.example.rahul.pennapps;
 
 import android.*;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.rahul.pennapps.Helpers.GPSTracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,7 +44,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
+import static android.R.attr.bitmap;
+import static android.provider.MediaStore.Images.Media.getBitmap;
 
 public class EventCreaterActivity extends AppCompatActivity implements
         View.OnClickListener, OnMapReadyCallback {
@@ -36,9 +66,15 @@ public class EventCreaterActivity extends AppCompatActivity implements
 
     private Toolbar toolbar;
 
-    Button btnDatePicker, btnTimePicker;
-    EditText txtDate, txtTime;
+    Button btnDatePicker, btnTimePicker, btnSelectImage, btnSubmit;
+    EditText txtDate, txtTime, txtTitle, txtDesc;
     private int mYear, mMonth, mDay, mHour, mMinute;
+
+    private Bitmap bitmap;
+    private ImageView imageView;
+
+    private double lat, lng;
+    String addr = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +83,21 @@ public class EventCreaterActivity extends AppCompatActivity implements
 
         btnDatePicker = (Button) findViewById(R.id.btn_date);
         btnTimePicker = (Button) findViewById(R.id.btn_time);
+        btnSelectImage = (Button) findViewById(R.id.btn_select_img);
+        btnSubmit = (Button) findViewById(R.id.btn_submit);
         txtDate = (EditText) findViewById(R.id.in_date);
         txtTime = (EditText) findViewById(R.id.in_time);
+        txtTitle = (EditText) findViewById(R.id.event_title_input);
+        txtDesc = (EditText) findViewById(R.id.event_desc_input);
+        imageView = (ImageView) findViewById(R.id.imageView);
 
         btnDatePicker.setOnClickListener(this);
         btnTimePicker.setOnClickListener(this);
+        btnSelectImage.setOnClickListener(this);
+        btnSubmit.setOnClickListener(this);
+
+        lat = 1.0;
+        lng = 1.0;
 
         // Get the SupportMapFragment and request notification
         // when the map is ready to be used.
@@ -106,8 +152,118 @@ public class EventCreaterActivity extends AppCompatActivity implements
                     }, mHour, mMinute, false);
             timePickerDialog.show();
         }
+
+        if (v == btnSelectImage) {
+            showFileChooser();
+        }
+
+        if (v == btnSubmit) {
+            uploadImage();
+        }
     }
 
+    private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+    }
+
+    public String getStringImage(Bitmap bmp) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
+    }
+
+    private String getSessionToken() {
+        SharedPreferences sharedPref = getSharedPreferences("token_prefs", Context.MODE_PRIVATE);
+        String sessionToken = sharedPref.getString("session_token", null);
+
+        return sessionToken;
+    }
+
+    private void uploadImage() {
+        //Showing the progress dialog
+        String url = "http://pennapps-nrbs.herokuapp.com/events/create/";
+        final ProgressDialog loading = ProgressDialog.show(this, "Uploading...", "Please wait...", false, false);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        //Disimissing the progress dialog
+                        loading.dismiss();
+                        //Showing toast message of the response
+                        Toast.makeText(EventCreaterActivity.this, s, Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        // Do come redirect shit
+                        loading.dismiss();
+                        //Showing toast
+                        Toast.makeText(EventCreaterActivity.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                //Converting Bitmap to String
+                String image = getStringImage(bitmap);
+
+                //Creating parameters
+                Map<String, String> params = new Hashtable<String, String>();
+                Calendar cal = Calendar.getInstance();
+                cal.set(mYear, mMonth, mDay, mHour, mMinute);
+
+                //Adding parameters
+                params.put("time", String.valueOf((int) (cal.getTimeInMillis() / 1000)));
+                params.put("latitude", String.valueOf(lat));
+                params.put("longitude", String.valueOf(lng));
+                params.put("location_name", addr);
+                params.put("description", txtDesc.getText().toString());
+                params.put("title", txtTitle.getText().toString());
+                params.put("image", image);
+
+                //returning parameters
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("session-token", getSessionToken());
+
+                return params;
+            }
+        };
+
+
+        //Creating a Request Queue
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        //Adding request to the queue
+        requestQueue.add(stringRequest);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri filePath = data.getData();
+            try {
+                //Getting the Bitmap from Gallery
+                bitmap = getBitmap(getContentResolver(), filePath);
+                //Setting the Bitmap to ImageView
+                imageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -157,7 +313,45 @@ public class EventCreaterActivity extends AppCompatActivity implements
 
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
             }
+
+            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+                @Override
+                public void onMapClick(LatLng arg0) {
+                    // TODO Auto-generated method stub
+                    lat = arg0.latitude;
+                    lng = arg0.longitude;
+                    reverseGeocoding(lat, lng);
+                    Log.d("arg0", arg0.latitude + "-" + arg0.longitude);
+                }
+            });
         }
 
     }
+
+    private void reverseGeocoding(double lat, double lng) {
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&" +
+                "key=AIzaSyBMONstHLbK7eJHjkLcTae7D6DZCyVuQPs";
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest req = new JsonObjectRequest(url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            addr = response.getJSONObject("results")
+                                    .getString("formatted_address");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(req);
+    }
+
 }
