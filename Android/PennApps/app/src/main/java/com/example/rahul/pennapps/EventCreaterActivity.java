@@ -28,14 +28,20 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.rahul.pennapps.Helpers.AppHelper;
 import com.example.rahul.pennapps.Helpers.GPSTracker;
+import com.example.rahul.pennapps.Helpers.VolleyMultipartRequest;
+import com.example.rahul.pennapps.Helpers.VolleySingleton;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -185,33 +191,65 @@ public class EventCreaterActivity extends AppCompatActivity implements
     }
 
     private void uploadImage() {
-        //Showing the progress dialog
+        // loading or check internet connection or something...
+        // ... then
         String url = "http://pennapps-nrbs.herokuapp.com/events/create/";
-        final ProgressDialog loading = ProgressDialog.show(this, "Uploading...", "Please wait...", false, false);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        //Disimissing the progress dialog
-                        loading.dismiss();
-                        //Showing toast message of the response
-                        Toast.makeText(EventCreaterActivity.this, s, Toast.LENGTH_LONG).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        // Do come redirect shit
-                        loading.dismiss();
-                        //Showing toast
-                        Toast.makeText(EventCreaterActivity.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
-                    }
-                }) {
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, url, new Response.Listener<NetworkResponse>() {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                //Converting Bitmap to String
-                String image = getStringImage(bitmap);
+            public void onResponse(NetworkResponse response) {
+                String resultResponse = new String(response.data);
+                try {
+                    JSONObject result = new JSONObject(resultResponse);
+                    String status = result.getString("status");
+                    String message = result.getString("message");
 
+                    Intent intent = new Intent(EventCreaterActivity.this, MainActivity.class);
+                    startActivity(intent);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                String errorMessage = "Unknown error";
+                if (networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        errorMessage = "Request timeout";
+                    } else if (error.getClass().equals(NoConnectionError.class)) {
+                        errorMessage = "Failed to connect server";
+                    }
+                } else {
+                    String result = new String(networkResponse.data);
+                    try {
+                        JSONObject response = new JSONObject(result);
+                        String status = response.getString("status");
+                        String message = response.getString("message");
+
+                        Log.e("Error Status", status);
+                        Log.e("Error Message", message);
+
+                        if (networkResponse.statusCode == 404) {
+                            errorMessage = "Resource not found";
+                        } else if (networkResponse.statusCode == 401) {
+                            errorMessage = message + " Please login again";
+                        } else if (networkResponse.statusCode == 400) {
+                            errorMessage = message + " Check your inputs";
+                        } else if (networkResponse.statusCode == 500) {
+                            errorMessage = message + " Something is getting wrong";
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Log.i("Error", errorMessage);
+                error.printStackTrace();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
                 //Creating parameters
                 Map<String, String> params = new Hashtable<String, String>();
                 Calendar cal = Calendar.getInstance();
@@ -224,9 +262,17 @@ public class EventCreaterActivity extends AppCompatActivity implements
                 params.put("location_name", addr);
                 params.put("description", txtDesc.getText().toString());
                 params.put("title", txtTitle.getText().toString());
-                params.put("image", image);
 
-                //returning parameters
+                return params;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                // file name could found file base or direct access from real path
+                // for now just get bitmap data from ImageView
+                params.put("image", new DataPart("img.jpg", AppHelper.getFileDataFromBitmap(getBaseContext(), bitmap), "image/jpeg"));
+
                 return params;
             }
 
@@ -239,12 +285,7 @@ public class EventCreaterActivity extends AppCompatActivity implements
             }
         };
 
-
-        //Creating a Request Queue
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        //Adding request to the queue
-        requestQueue.add(stringRequest);
+        VolleySingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
     }
 
     @Override
@@ -332,13 +373,16 @@ public class EventCreaterActivity extends AppCompatActivity implements
         String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&" +
                 "key=AIzaSyBMONstHLbK7eJHjkLcTae7D6DZCyVuQPs";
         RequestQueue queue = Volley.newRequestQueue(this);
+        final ProgressDialog dialog = ProgressDialog.show(this, "Please Wait", "We are calculating your location", false);
+
         JsonObjectRequest req = new JsonObjectRequest(url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            addr = response.getJSONObject("results")
+                            addr = response.getJSONArray("results").getJSONObject(0)
                                     .getString("formatted_address");
+                            dialog.dismiss();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
