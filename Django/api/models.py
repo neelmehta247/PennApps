@@ -57,10 +57,12 @@ class Event(models.Model):
         return self.title
 
     def json(self):
+        interest = Interest.objects.filter(event=self)
+
         return {'time': str(self.time), 'location_latitude': str(self.location_latitude), 'image': self.image,
                 'location_longitude': str(self.location_longitude), 'location_name': self.location_name,
                 'title': self.title, 'description': self.description, 'id': str(self.id),
-                'orgranizer': self.organizer.json()}
+                'orgranizer': self.organizer.json(), 'num_interested': len(interest)}
 
 
 class Interest(models.Model):
