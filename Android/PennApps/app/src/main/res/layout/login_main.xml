@@ -20,7 +20,8 @@
         android:orientation="vertical"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="140dp">
+        android:paddingTop="140dp"
+        android:weightSum="1">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/input_layout_name"
@@ -72,8 +73,8 @@
                 android:layout_width="350dp"
                 android:layout_marginTop="5dp"
                 android:layout_height="wrap_content"
-                android:entries="@array/university_list_names" >
-
+                android:entries="@array/university_list_names"
+                android:textColor="@android:color/black" >
             </Spinner>
 
 
@@ -86,8 +87,6 @@
             android:layout_marginTop="40dp"
             android:fadeScrollbars="false"
             android:text="@string/btn_sign_up"
-
-
             android:textColor="@android:color/black" />
 
         <Button
@@ -97,7 +96,6 @@
             android:layout_marginTop="10dp"
             android:fadeScrollbars="false"
             android:text="Login Here"
-
             android:textColor="@android:color/black" />
 
     </LinearLayout>
