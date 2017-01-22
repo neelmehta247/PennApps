@@ -4,7 +4,6 @@ package com.example.rahul.pennapps;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,19 +20,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -59,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        login();
 
         populateSpinner();
 
@@ -92,6 +88,18 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void login() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        String sessionToken = sharedPref.getString("session_token", null);
+        String userToken = sharedPref.getString("user_token", null);
+
+        if (sessionToken != null && userToken != null) {
+            Intent intent = new Intent(LoginActivity.this, LoginActivity2.class);
+            startActivity(intent);
+        }
+    }
+
 
     private void populateSpinner() {
         // Instantiate the RequestQueue.
