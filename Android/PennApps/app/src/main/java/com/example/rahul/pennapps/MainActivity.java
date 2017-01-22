@@ -2,6 +2,7 @@ package com.example.rahul.pennapps;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -12,10 +13,20 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.rahul.pennapps.Helpers.Event;
 import com.example.rahul.pennapps.Helpers.GPSTracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,12 +34,24 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("MissingPermission")
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap googleMap;
     private GPSTracker gps;
+
+    private Map<String, Event> hash = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +75,65 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         gps = new GPSTracker(this);
+    }
+
+    private String getSessionToken() {
+        SharedPreferences sharedPref = getSharedPreferences("token_prefs", Context.MODE_PRIVATE);
+        String sessionToken = sharedPref.getString("session_token", null);
+
+        return sessionToken;
+    }
+
+    private String getUserToken() {
+        SharedPreferences sharedPref = getSharedPreferences("token_prefs", Context.MODE_PRIVATE);
+        String userToken = sharedPref.getString("user_token", null);
+
+        return userToken;
+    }
+
+    private void getEvents() {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://pennapps-nrbs.herokuapp.com/events/";
+
+        JsonObjectRequest req = new JsonObjectRequest(url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        ArrayAdapter<String> adapter;
+                        List<String> list = new ArrayList<String>();
+
+                        try {
+                            for (int i = 0; i < response.getJSONArray("data").length(); i++) {
+                                JSONObject obj = response.getJSONArray("data").getJSONObject(i);
+                                Event evt = Event.fromJSON(obj);
+                                hash.put(evt.title, evt);
+
+                                Marker m = googleMap.addMarker(new MarkerOptions()
+                                        .position(evt.loc)
+                                        .title(evt.title));
+                                googleMap.setOnInfoWindowClickListener(MainActivity.this);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("session-token", getSessionToken());
+
+                return params;
+            }
+        };
+
+        // Add the request to the RequestQueue.
+        queue.add(req);
     }
 
     @Override
@@ -120,10 +202,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 double lat = loc.getLatitude();
                 double lng = loc.getLongitude();
 
-                CameraPosition position = new CameraPosition.Builder().target(new LatLng(lat, lng)).zoom(17).build();
+                CameraPosition position = new CameraPosition.Builder().target(new LatLng(lat, lng)).zoom(1).build();
 
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
             }
+            getEvents();
         }
 
     }
@@ -146,10 +229,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         double lat = loc.getLatitude();
                         double lng = loc.getLongitude();
 
-                        CameraPosition position = new CameraPosition.Builder().target(new LatLng(lat, lng)).zoom(17).build();
+                        CameraPosition position = new CameraPosition.Builder().target(new LatLng(lat, lng)).build();
 
                         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
                     }
+                    getEvents();
 
                 } else {
 
@@ -162,5 +246,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             // other 'case' lines to check for other
             // permissions this app might request
         }
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(this, "Info window clicked: " + marker.getTitle(),
+                Toast.LENGTH_SHORT).show();
     }
 }
